@@ -63,3 +63,36 @@ compress (x:xs) = x : compress' xs x
         compress' (x:xs) ignore
             | x == ignore = compress' xs ignore
             | otherwise = x : compress' xs x
+
+-- problem 9
+
+pack :: (Eq a) => [a] -> [[a]]
+pack [] = []
+pack (x:xs) = pack' xs [[x]]
+    where
+        pack' [] ys = ys
+        pack' (x:xs) ys
+            | x == (head . last $ ys) = pack' xs [x:head ys]
+            | otherwise = ys ++ pack' xs [[x]]
+
+pack' :: (Eq a) => [a] -> [[a]]
+pack' [] = []
+pack' (x:xs) = let (first, rest) = span (==x) xs
+                in (x:first) : pack' rest
+
+-- problem 10
+-- run-length encoding
+
+rle :: (Eq a) => [a] -> [(Int, a)]
+rle [] = []
+rle (x:xs) = let (first, rest) = span (==x) xs
+              in (1 + count first, x) : rle rest
+                where
+                    count (x:xs) = 1 + count xs
+                    count [] = 0
+
+rle' :: (Eq a) => [a] -> [(Int, a)]
+rle' [] = []
+rle' xs = [(length x, head x) | x <- pack' xs]
+
+
