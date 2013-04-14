@@ -182,3 +182,22 @@ slice (x:xs) from to
     | to == 1 = [x]
     | from == 1 = x : slice xs 1 (to-1)
     | otherwise = slice xs (from-1) (to-1)
+
+-- problem 19
+
+rotate :: [a] -> Int -> [a]
+rotate xs@(x:xs') n
+    | n > 0 = rotate (xs' ++ [x]) (n-1)
+    | n < 0 = rotate (last xs' : init xs) (n+1)
+    | otherwise = xs
+
+-- problem 20
+
+removeAt :: Int -> [a] -> (a, [a])
+removeAt 0 _ = error "Index is 1-based"
+removeAt _ [] = error "Empty list"
+removeAt n xs = removeAt' n xs []
+    where
+        removeAt' n (x:xs') acc
+            | n == 1 = (x, acc ++ xs')
+            | n > 1 = removeAt' (n-1) xs' (acc ++ [x])
