@@ -85,14 +85,52 @@ pack' (x:xs) = let (first, rest) = span (==x) xs
 
 rle :: (Eq a) => [a] -> [(Int, a)]
 rle [] = []
-rle (x:xs) = let (first, rest) = span (==x) xs
-              in (1 + count first, x) : rle rest
-                where
-                    count (x:xs) = 1 + count xs
-                    count [] = 0
+rle xs@(x:_) = let (first, rest) = span (==x) xs
+                in (length first, x) : rle rest
 
 rle' :: (Eq a) => [a] -> [(Int, a)]
 rle' [] = []
 rle' xs = [(length x, head x) | x <- pack' xs]
 
+-- problem 11
 
+data RleElem a = Single a | Multiple Int a
+    deriving (Show)
+
+rle'' :: (Eq a) => [a] -> [RleElem a]
+rle'' [] = []
+rle'' xs@(x:xs')
+    | headLength == 1 = (Single x) : rle'' xs'
+    | otherwise = (Multiple headLength x) : rle'' rest
+    where
+        headLength = length . fst $ split
+        rest = snd split
+        split = span (==x) xs
+
+rle''' :: (Eq a) => [a] -> [RleElem a]
+rle''' [] = []
+rle''' xs@(x:_) =
+    let (head', rest) = span (==x) xs
+        hlength = length head'
+    in  (if hlength == 1 then (Single x)
+                         else (Multiple hlength x)) : rle''' rest
+
+-- problem 12
+
+rleDecode :: [RleElem a] -> [a]
+rleDecode = concatMap decode'
+    where
+        decode' (Single x) = [x]
+        decode' (Multiple n x) = replicate n x
+
+-- problem 13
+
+directRle :: (Eq a) => [a] -> [RleElem a]
+directRle [] = []
+directRle (x:xs) = directRle' xs x 1
+    where
+        build n x = if n > 1 then (Multiple n x) else (Single x)
+        directRle' [] x n = [build n x]
+        directRle' (x:xs) x' n
+            | x == x' = directRle' xs x' (n+1)
+            | otherwise = (build n x') : directRle' xs x 1
