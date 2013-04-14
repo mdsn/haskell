@@ -165,3 +165,20 @@ split xs n
     where
         split' ys xs' 0 = (ys, xs')
         split' ys (x:xs') n = split' (ys ++ [x]) xs' (n-1)
+
+split' :: [a] -> Int -> ([a], [a])
+split' (x:xs) n
+    | n > 0 = let (f, l) = split' xs (n-1) in (x:f, l)
+--    | otherwise = ([], xs)
+split' xs _ = ([], xs)
+
+-- problem 18
+
+slice :: [a] -> Int -> Int -> [a]
+slice [] _ _ = []
+slice _ from to
+    | to < from = error "Start index is greater than end index"
+slice (x:xs) from to
+    | to == 1 = [x]
+    | from == 1 = x : slice xs 1 (to-1)
+    | otherwise = slice xs (from-1) (to-1)
