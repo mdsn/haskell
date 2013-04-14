@@ -201,3 +201,16 @@ removeAt n xs = removeAt' n xs []
         removeAt' n (x:xs') acc
             | n == 1 = (x, acc ++ xs')
             | n > 1 = removeAt' (n-1) xs' (acc ++ [x])
+
+-- problem 21
+
+insertAt :: a -> [a] -> Int -> [a]
+insertAt x ys 1 = x:ys
+insertAt x (y:ys) n = y:insertAt x ys (n-1)
+
+-- problem 22
+
+range :: Int -> Int -> [Int]
+range x y
+    | x > y = []
+    | x <= y = x:range (x+1) y
