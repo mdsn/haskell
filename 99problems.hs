@@ -134,3 +134,34 @@ directRle (x:xs) = directRle' xs x 1
         directRle' (x:xs) x' n
             | x == x' = directRle' xs x' (n+1)
             | otherwise = (build n x') : directRle' xs x 1
+
+-- problem 14
+
+dupl :: [a] -> [a]
+dupl [] = []
+dupl (x:xs) = x:x:dupl xs
+
+-- problem 15
+
+nupl :: Int -> [a] -> [a]
+nupl n = concatMap (replicate n)
+
+-- problem 16
+
+dropEvery :: [a] -> Int -> [a]
+dropEvery xs n = dropEvery' xs n n
+    where
+        dropEvery' [] _ _ = []
+        dropEvery' (x:xs) n m
+            | m == 1 = dropEvery' xs n n
+            | otherwise = x : dropEvery' xs n (m-1)
+
+-- problem 17
+
+split :: [a] -> Int -> ([a], [a])
+split xs n
+    | n > length xs = error "Index out of bounds"
+    | otherwise = split' [] xs n
+    where
+        split' ys xs' 0 = (ys, xs')
+        split' ys (x:xs') n = split' (ys ++ [x]) xs' (n-1)
