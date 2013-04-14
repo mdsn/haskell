@@ -38,4 +38,28 @@ reverse' xs = reverse'' xs []
         reverse'' [] reversed = reversed
         reverse'' (x:xs) reversed = reverse'' xs (x:reversed)
 
+-- problem 6
 
+palindrome :: (Eq a) => [a] -> Bool
+palindrome [] = True
+palindrome [_] = True
+palindrome (x:xs) = x == last xs && palindrome (init xs)
+
+-- problem 7
+
+data NestedList a = Elem a | List [NestedList a]
+flatten :: NestedList a -> [a]
+flatten (Elem x) = [x]
+flatten (List (x:xs)) = flatten x ++ flatten (List xs)
+flatten (List []) = []
+
+-- problem 8
+
+compress :: (Eq a) => [a] -> [a]
+compress [] = []
+compress (x:xs) = x : compress' xs x
+    where
+        compress' [] _ = []
+        compress' (x:xs) ignore
+            | x == ignore = compress' xs ignore
+            | otherwise = x : compress' xs x
