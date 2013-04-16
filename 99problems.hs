@@ -26,6 +26,13 @@ length' :: [a] -> Int
 length' [] = 0
 length' (_:xs) = 1 + length' xs
 
+length'' :: [a] -> Int
+length'' [] = 0
+length'' (_:xs) = length''' xs 1
+    where
+        length''' [] acc = acc
+        length''' (_:xs) acc = length''' xs (acc+1)
+
 -- problem 5
 --reverse' :: [a] -> [a]
 --reverse' [] = []
