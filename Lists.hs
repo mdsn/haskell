@@ -1,9 +1,11 @@
 module Lists
-( selections
-, mergeuniq
+( intersperse
+, intercalate
+, selections
+, merge
 ) where
 
-import Data.List (sort)
+import Data.List (sort, nub)
 
 intersperse :: a -> [a] -> [a]
 intersperse _ [] = []
@@ -27,11 +29,5 @@ selections (x:xs) = (x,xs) : [ (y,x:ys) | (y,ys) <- selections xs ]
 
 -- merge sorted lists, discard repeated
 -- e.g. mergeuniq [[1,2,3], [3,4,5], [2,6,7]] -> [1,2,3,4,5,6,7]
-mergeuniq :: (Eq a, Ord a) => [[a]] -> [a]
-mergeuniq = uniq . sort . concat
-    where
-        uniq [] = []
-        uniq (x:[]) = [x]
-        uniq (x:xs)
-            | x /= (head xs) = x : uniq xs
-            | otherwise = uniq xs
+merge :: (Eq a, Ord a) => [[a]] -> [a]
+merge = nub . sort . concat
