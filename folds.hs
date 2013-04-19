@@ -29,3 +29,12 @@ filter' p = foldr (pick) []
         pick x acc
             | p x = x:acc
             | otherwise = acc
+
+-- 7. remdups (compress) - remove adjacent duplicates
+compress :: (Eq a) => [a] -> [a]
+compress = foldr (pick) []
+    where
+        pick x [] = [x]
+        pick x acc
+            | x == head acc = acc
+            | otherwise = x:acc
