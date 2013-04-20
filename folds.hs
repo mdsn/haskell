@@ -38,3 +38,10 @@ compress = foldr (pick) []
         pick x acc
             | x == head acc = acc
             | otherwise = x:acc
+
+-- 8. define inits
+inits :: [a] -> [[a]]
+inits xs = reverse (foldr (newInit) [] (reverse xs))
+    where
+        newInit x [] = [[x], []]
+        newInit x acc = (head acc ++ [x]):acc
