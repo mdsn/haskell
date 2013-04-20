@@ -59,3 +59,7 @@ approxe n = foldl (approx) 0 [0..n]
 -- 10. define sae -> successive approximations to e
 sae :: (Fractional a, Enum a) => a -> [a]
 sae n = scanl (approx) 1 [1..n]
+
+-- 11. define iterate
+iterate' :: (a -> a) -> a -> [a]
+iterate' f x = scanl (\a x -> f a) x [1..]
