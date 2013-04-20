@@ -45,3 +45,10 @@ inits xs = reverse (foldr (newInit) [] (reverse xs))
     where
         newInit x [] = [[x], []]
         newInit x acc = (head acc ++ [x]):acc
+
+-- 9. define approxe n = sum (1/i!), from i = 0 to n - using foldl
+approxe :: (Fractional a, Enum a) => a -> a
+approxe n = foldl (\acc i -> acc + 1/(f i)) 0 [0..n]
+    where
+        f 0 = 1
+        f n = foldr (*) 1 [1..n]
