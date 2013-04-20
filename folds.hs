@@ -76,6 +76,8 @@ rotate xs = foldl (rotate') [] xs
         rotate' (h:acc) x = (shift h):h:acc
 
 -- 13. define mult using add and pred
+--            exp using mult and pred
+--            tetration using exp and pred
 add i 0 = i
 add i j = succ . add i . pred $ j
 
@@ -92,3 +94,17 @@ exp' i j = (*i) . exp' i $ (pred j)
 tetration :: (Num a, Enum a) => a -> a -> a
 tetration a 1 = a
 tetration a n = exp' a . tetration a $ (pred n)
+
+-- 13 b. define add, mult, exp using foldi
+foldi :: (a -> a) -> a -> Int -> a
+foldi f q 0 = q
+foldi f q i = f (foldi f q (pred i))
+
+add' :: Int -> Int -> Int
+add' i j = foldi (+1) i j
+
+mult' :: (Num a, Enum a) => a -> Int -> a
+mult' i j = foldi (+i) 0 j
+
+exp'' :: (Num a, Enum a) => a -> Int -> a
+exp'' i j = foldi (*i) 1 j
