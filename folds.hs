@@ -47,8 +47,15 @@ inits xs = reverse (foldr (newInit) [] (reverse xs))
         newInit x acc = (head acc ++ [x]):acc
 
 -- 9. define approxe n = sum (1/i!), from i = 0 to n - using foldl
-approxe :: (Fractional a, Enum a) => a -> a
-approxe n = foldl (\acc i -> acc + 1/(f i)) 0 [0..n]
+approx :: (Fractional a, Enum a) => a -> a -> a
+approx a i = a + 1 / f i
     where
         f 0 = 1
         f n = foldr (*) 1 [1..n]
+
+approxe :: (Fractional a, Enum a) => a -> a
+approxe n = foldl (approx) 0 [0..n]
+
+-- 10. define sae -> successive approximations to e
+sae :: (Fractional a, Enum a) => a -> [a]
+sae n = scanl (approx) 1 [1..n]
