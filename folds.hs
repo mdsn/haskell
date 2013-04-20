@@ -63,3 +63,14 @@ sae n = scanl (approx) 1 [1..n]
 -- 11. define iterate
 iterate' :: (a -> a) -> a -> [a]
 iterate' f x = scanl (\a x -> f a) x [1..]
+
+-- 12. define shift [abc] -> [bca], define rotate (all rotations of a list)
+shift :: [a] -> [a]
+shift [] = []
+shift (x:xs) = xs ++ [x]
+
+rotate :: (Eq a) => [a] -> [[a]]
+rotate xs = foldl (rotate') [] xs
+    where
+        rotate' [] x = [xs]
+        rotate' (h:acc) x = (shift h):h:acc
