@@ -74,3 +74,21 @@ rotate xs = foldl (rotate') [] xs
     where
         rotate' [] x = [xs]
         rotate' (h:acc) x = (shift h):h:acc
+
+-- 13. define mult using add and pred
+add i 0 = i
+add i j = succ . add i . pred $ j
+
+mult :: (Num a, Enum a) => a -> a -> a
+mult _ 0 = 0
+mult 0 _ = 0
+mult i 1 = i
+mult i j = (+i) . mult i $ (pred j)
+
+exp' :: (Num a, Enum a) => a -> a -> a
+exp' i 1 = i
+exp' i j = (*i) . exp' i $ (pred j)
+
+tetration :: (Num a, Enum a) => a -> a -> a
+tetration a 1 = a
+tetration a n = exp' a . tetration a $ (pred n)
