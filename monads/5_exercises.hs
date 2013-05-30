@@ -2,7 +2,8 @@
     All about monads - 5: exercises
     http://www.haskell.org/haskellwiki/All_About_Monads#Exercises
 -}
-import Control.Monad (mplus)
+import Control.Monad
+import Data.Maybe
 
 data Sheep = Sheep {name::String, mother::Maybe Sheep, father::Maybe Sheep}
 
@@ -51,11 +52,55 @@ mothersPaternalGrandfather' s =
 
 -- Exercise 2: write parent and grandparent using mplus
 
-parent' :: Sheep -> Maybe Sheep
-parent' s = (mother s) `mplus` (father s)
+parent :: Sheep -> Maybe Sheep
+parent s = (mother s) `mplus` (father s)
 
 grandparent :: Sheep -> Maybe Sheep
-grandparent s = (mother s >>= parent') `mplus` (father s >>= parent')
+grandparent s = (mother s >>= parent) `mplus` (father s >>= parent)
+
+
+-- Exercise 3: write parent and grandparent, get all the sheep involved
+-- list's mplus = ++
+parents :: Sheep -> [Sheep]
+parents s = (maybeToList $ mother s) ++ (maybeToList $ father s)
+
+grandparents :: Sheep -> [Sheep]
+grandparents s = parents s >>= parents
+
+
+-- Exercise 4: use the MonadPlus class constraint
+toMonad :: (MonadPlus m) => Maybe a -> m a
+toMonad Nothing = mzero
+toMonad (Just s) = return s
+
+{- Usage:
+ -      mparent d :: Maybe Sheep
+ -      mparent d :: [Sheep]
+ -      (mgrandparent d :: [Sheep]) >>= mparent
+ -      (mparent d :: [Sheep]) ++ (mgrandparent d :: [Sheep]) >>= mparent
+ -
+ - Compose a monadic computation and use it twice:
+ -      let f = \d -> (mparent d :: [Sheep]) ++ 
+ -                    (mgrandparent d :: [Sheep]) >>= mparent
+ -      f . head . f $ d
+ -
+ -      :t f 
+ -          f :: Sheep -> [Sheep]
+ -}
+mparent :: (MonadPlus m) => Sheep -> m Sheep
+mparent s = (toMonad $ mother s) `mplus` (toMonad $ father s)
+
+mgrandparent :: (MonadPlus m) => Sheep -> m Sheep
+mgrandparent s = mparent s >>= mparent
+
+
+{- Section 6.2.2 - monadic versions of list functions
+ - Usage: 
+ -      traceFamily d [mother, father, father]
+ -}
+traceFamily :: Sheep -> [(Sheep -> Maybe Sheep)] -> Maybe Sheep
+traceFamily s steps = foldM getParent s steps
+    where getParent s step = step s
 
 breedSheep :: Sheep
 breedSheep = let adam   = Sheep "Adam" Nothing Nothing
