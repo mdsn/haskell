@@ -222,3 +222,12 @@ range x y
     | x > y = []
     | x <= y = x:range (x+1) y
 
+-- problem 26
+
+combinations :: Int -> [a] -> [[a]]
+combinations _ []     = [[]]
+combinations 0 _      = []
+combinations n (x:xs)
+    | length xs < n   = [x:xs]
+    | otherwise       = (map (x:) (combinations (n-1) xs)) ++
+                        (combinations n xs)
