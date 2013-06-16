@@ -24,6 +24,12 @@ keepStraight :: Zipper a -> Maybe (Zipper a)
 keepStraight (t, Passage x n) = Just (KeepStraight x : t, n)
 keepStraight _                = Nothing
 
+back :: Zipper a -> Maybe (Zipper a)
+back ([], _)               = Nothing
+back (KeepStraight x:t, n) = Just (t, Passage x n)
+back (TurnLeft x r:t, l)   = Just (t, Fork x l r)
+back (TurnRight x l:t, r)  = Just (t, Fork x l r)
+
 get :: Node a -> a
 get (DeadEnd x)     = x
 get (Passage x _)   = x

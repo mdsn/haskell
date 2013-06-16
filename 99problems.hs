@@ -226,7 +226,7 @@ range x y
 
 combinations :: Int -> [a] -> [[a]]
 combinations _ []     = [[]]
-combinations 0 _      = []
+combinations 0 _      = [[]]
 combinations n (x:xs)
     | length xs < n   = [x:xs]
     | otherwise       = (map (x:) (combinations (n-1) xs)) ++
