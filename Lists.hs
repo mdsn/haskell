@@ -31,3 +31,15 @@ selections (x:xs) = (x,xs) : [ (y,x:ys) | (y,ys) <- selections xs ]
 -- e.g. mergeuniq [[1,2,3], [3,4,5], [2,6,7]] -> [1,2,3,4,5,6,7]
 merge :: (Eq a, Ord a) => [[a]] -> [a]
 merge = nub . sort . concat
+
+-- zip
+zip' :: [a] -> [b] -> [(a,b)]
+zip' [] _          = []
+zip' _ []          = []
+zip' (x:xs) (y:ys) = (x,y):zip' xs ys
+
+-- zipWith
+zipw :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipw _ [] _          = []
+zipw _ _ []          = []
+zipw f (x:xs) (y:ys) = (f x y):zipw f xs ys
