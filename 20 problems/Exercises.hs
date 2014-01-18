@@ -146,12 +146,12 @@ banana2' f a b = b `apple` (a `apple` (unicorn f))
 -- Relative Difficulty: 6
 -- (bonus: use apple + banana2)
 banana3 :: (Misty m) => (a -> b -> c -> d) -> m a -> m b -> m c -> m d
-banana3 = error "todo"
+banana3 f a b c = c `apple` (banana2 f a b)
 
 -- Exercise 18
 -- Relative Difficulty: 6
 -- (bonus: use apple + banana3)
 banana4 :: (Misty m) => (a -> b -> c -> d -> e) -> m a -> m b -> m c -> m d -> m e
-banana4 = error "todo"
+banana4 f a b c d = d `apple` (banana3 f a b c)
 
 main = putStrLn "It typechecks!"
