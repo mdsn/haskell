@@ -42,4 +42,52 @@ instance Fluffy (EitherRight t) where
   furry f (EitherRight (Left a)) = EitherRight $ Left a
   furry f (EitherRight (Right b)) = EitherRight . Right $ f b
 
+-- Misty (5 to 10)
+
+class Misty m where
+  banana :: (a -> m b) -> m a -> m b
+  unicorn :: a -> m a
+
+-- Exercise 7
+-- Relative Difficulty: 2
+instance Misty [] where
+  banana :: (a -> [b]) -> [a] -> [b]  -- concatMap
+  banana f = concat . map f
+
+  unicorn :: a -> [a]
+  unicorn = (:[])
+
+-- Exercise 8
+-- Relative Difficulty: 2
+instance Misty Maybe where
+  banana :: (a -> Maybe b) -> Maybe a -> Maybe b
+  banana f x = case x of Just a -> f a
+                         Nothing -> Nothing
+  unicorn :: a -> Maybe a
+  unicorn = Just
+
+-- Exercise 9
+-- Relative Difficulty: 6
+instance Misty ((->) t) where
+  -- ((->) t) = (t ->)
+  -- let m = (t ->)
+  --         a ->  m    b   ->  m    a  ->  m    b
+  banana :: (a -> (t -> b)) -> (t -> a) -> (t -> b)
+  banana f g = \t -> f (g t) t
+
+  unicorn :: a -> (t -> a)  -- const
+  unicorn = \a _ -> a
+
+-- Exercise 10
+-- Relative Difficulty: 6
+instance Misty (EitherLeft t) where
+  banana = error "todo"
+  unicorn = error "todo"
+
+-- Exercise 11
+-- Relative Difficulty: 6
+instance Misty (EitherRight t) where
+  banana = error "todo"
+  unicorn = error "todo"
+
 main = putStrLn "It typechecks!"
