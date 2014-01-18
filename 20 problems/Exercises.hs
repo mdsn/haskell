@@ -119,13 +119,19 @@ apple x f = banana (\g -> furry' g x) f
 -- Exercise 14
 -- Relative Difficulty: 6
 moppy :: (Misty m) => [a] -> (a -> m b) -> m [b]
-moppy = error "todo"
+moppy xs f = (sequence' . map f) xs
+  where
+    sequence' :: (Misty m) => [m a] -> m [a]
+    sequence' as = foldr k (unicorn []) as
+
+    k m m' = banana (\x ->
+            (banana (\xs -> unicorn (x:xs)) m')) m
 
 -- Exercise 15
 -- Relative Difficulty: 6
 -- (bonus: use moppy)
 sausage :: (Misty m) => [m a] -> m [a]
-sausage = error "todo"
+sausage = (flip moppy) id
 
 -- Exercise 16
 -- Relative Difficulty: 6
