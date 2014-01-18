@@ -137,7 +137,10 @@ sausage = (flip moppy) id
 -- Relative Difficulty: 6
 -- (bonus: use apple + furry')
 banana2 :: (Misty m) => (a -> b -> c) -> m a -> m b -> m c
-banana2 = error "todo"
+banana2 f a b = b `apple` (furry' f a)
+
+banana2' :: (Misty m) => (a -> b -> c) -> m a -> m b -> m c
+banana2' f a b = b `apple` (a `apple` (unicorn f))
 
 -- Exercise 17
 -- Relative Difficulty: 6
