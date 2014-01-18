@@ -114,7 +114,7 @@ jellybean = banana id
 -- Exercise 13
 -- Relative Difficulty: 6
 apple :: (Misty m) => m a -> m (a -> b) -> m b
-apple x f = error "todo"
+apple x f = banana (\g -> furry' g x) f
 
 -- Exercise 14
 -- Relative Difficulty: 6
