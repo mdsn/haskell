@@ -81,13 +81,21 @@ instance Misty ((->) t) where
 -- Exercise 10
 -- Relative Difficulty: 6
 instance Misty (EitherLeft t) where
-  banana = error "todo"
-  unicorn = error "todo"
+  banana :: (a -> EitherLeft t b) -> (EitherLeft t a) -> (EitherLeft t b)
+  banana f (EitherLeft x) = case x of Left a -> f a
+                                      Right b -> EitherLeft $ Right b
+
+  unicorn :: a -> (EitherLeft t a)
+  unicorn = EitherLeft . Left
 
 -- Exercise 11
 -- Relative Difficulty: 6
 instance Misty (EitherRight t) where
-  banana = error "todo"
-  unicorn = error "todo"
+  banana :: (a -> EitherRight t b) -> (EitherRight t a) -> (EitherRight t b)
+  banana f (EitherRight x) = case x of Left t -> EitherRight $ Left t
+                                       Right a -> f a
+
+  unicorn :: a -> (EitherRight t a)
+  unicorn = EitherRight . Right
 
 main = putStrLn "It typechecks!"
