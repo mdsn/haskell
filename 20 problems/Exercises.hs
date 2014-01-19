@@ -154,4 +154,22 @@ banana3 f a b c = c `apple` (banana2 f a b)
 banana4 :: (Misty m) => (a -> b -> c -> d -> e) -> m a -> m b -> m c -> m d -> m e
 banana4 f a b c d = d `apple` (banana3 f a b c)
 
+-- State
+
+newtype State s a = State {
+  state :: (s -> (s, a))
+}
+
+-- Exercise 19
+-- Relative Difficulty: 9
+instance Fluffy (State s) where
+  furry :: (a -> b) -> (State s a) -> (State s b)
+  furry f (State x) = State $ \st -> let (s', a) = x st in (s', f a)
+
+-- Exercise 20
+-- Relative Difficulty: 10
+instance Misty (State s) where
+  banana = error "todo"
+  unicorn = error "todo"
+
 main = putStrLn "It typechecks!"
