@@ -169,7 +169,10 @@ instance Fluffy (State s) where
 -- Exercise 20
 -- Relative Difficulty: 10
 instance Misty (State s) where
-  banana = error "todo"
-  unicorn = error "todo"
+  banana :: (a -> State s b) -> (State s a) -> (State s b)
+  banana f (State x) = State $ \st -> let (s', a) = x st in state (f a) s'
+
+  unicorn :: a -> State s a
+  unicorn a = State $ \st -> (st, a)
 
 main = putStrLn "It typechecks!"
