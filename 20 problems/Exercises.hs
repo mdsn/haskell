@@ -63,6 +63,7 @@ instance Misty Maybe where
   banana :: (a -> Maybe b) -> Maybe a -> Maybe b
   banana f x = case x of Just a -> f a
                          Nothing -> Nothing
+
   unicorn :: a -> Maybe a
   unicorn = Just
 
