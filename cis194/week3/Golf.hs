@@ -21,3 +21,9 @@ skips xs = [every n xs | n <- [1..length xs]]
           | n == current = x : every' 1 xs'
           | otherwise    = every' (current + 1) xs'
     -}
+
+localMaxima :: [Integer] -> [Integer]
+localMaxima (x:y:z:xs) =
+    if (y > x) && (y > z) then y : localMaxima (y:z:xs)
+                          else localMaxima (y:z:xs)
+localMaxima _      = []
