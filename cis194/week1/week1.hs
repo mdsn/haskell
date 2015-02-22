@@ -1,5 +1,7 @@
 module Week1 where
 
+{-- CC Validation --}
+
 toDigits :: Integer -> [Integer]
 toDigits n
   | n <= 0    = []
@@ -26,3 +28,15 @@ validate :: Integer -> Bool
 validate = isValid . sumDigits . doubleEveryOther . toDigits
   where
     isValid = (==0) . (`mod` 10)
+
+{- Hanoi -}
+
+type Peg = String
+type Move = (Peg, Peg)
+
+hanoi :: Int -> Peg -> Peg -> Peg -> [Move]
+hanoi 0 _ _ _           = []
+hanoi n from to storage = useStorage ++ [(from, to)] ++ emptyStorage
+  where
+    useStorage   = hanoi (n-1) from storage to
+    emptyStorage = hanoi (n-1) storage to from
