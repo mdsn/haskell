@@ -19,6 +19,16 @@ fun2 n | even n    = n + fun2 (n `div` 2)
 -- ¿?
 -- fun2' :: Integer -> Integer
 
+{- Exercise 3 -}
+
+xor :: [Bool] -> Bool
+xor = foldr (\p q -> if p then not q else q) False
+
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr ((:) . f) []
+
+{- Exercise 2 -}
+{-}
 data Tree a = Leaf
             | Node Integer (Tree a) a (Tree a)
             deriving (Show, Eq)
@@ -54,3 +64,5 @@ printTree x = printTree' x 0
                            ++ "\n"
                            ++ (printTree' r (depth + 1))
       Leaf -> (replicate (2 * depth) ' ') ++ "Leaf"
+
+-}
