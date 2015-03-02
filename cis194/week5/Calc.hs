@@ -13,6 +13,15 @@ instance Expr ExprT where
     mul = Mul
     add = Add
 
+instance Expr Bool where
+    lit n | n <= 0    = False
+          | otherwise = True
+    mul = (&&)
+    add = (||)
+
+testExp :: Expr a => String -> Maybe a
+testExp = parseExp lit add mul
+
 reify :: ExprT -> ExprT
 reify = id
 
@@ -30,3 +39,4 @@ evalStr s =
     case parseExp Lit Add Mul s of
         Just e -> Just $ eval e
         _      -> Nothing
+
