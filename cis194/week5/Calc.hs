@@ -13,11 +13,22 @@ instance Expr ExprT where
     mul = Mul
     add = Add
 
+instance Expr Integer where
+    lit = id
+    mul = (*)
+    add = (+)
+
 instance Expr Bool where
     lit n | n <= 0    = False
           | otherwise = True
     mul = (&&)
     add = (||)
+
+newtype MinMax = MinMax Integer deriving (Eq, Ord, Show)
+instance Expr MinMax where
+    lit = MinMax
+    mul = max
+    add = min
 
 testExp :: Expr a => String -> Maybe a
 testExp = parseExp lit add mul
