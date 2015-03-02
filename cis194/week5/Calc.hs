@@ -17,6 +17,9 @@ instance Expr Program where
     mul x y = x ++ y ++ [Mul]
     add x y = x ++ y ++ [Add]
 
+compile :: String -> Maybe Program
+compile = parseExp lit add mul
+
 instance Expr E.ExprT where
     lit = E.Lit
     mul = E.Mul
