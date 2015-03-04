@@ -34,7 +34,7 @@ streamFromSeed :: (a -> a) -> a -> Stream a
 streamFromSeed f x = let x' = f x in Stream x $ streamFromSeed f x'
 
 interleaveStreams :: Stream a -> Stream a -> Stream a
-interleaveStreams (Stream x xs) ys = Stream x (interleaveStreams ys xs)
+interleaveStreams (Stream x xs) ys = Stream x $ interleaveStreams ys xs
 
 -- Streams
 
@@ -42,4 +42,4 @@ nats :: Stream Integer
 nats = streamFromSeed (+1) 0
 
 ruler :: Stream Integer
-ruler = undefined
+ruler = foldr1 interleaveStreams . streamToList . streamMap streamRepeat $ nats
