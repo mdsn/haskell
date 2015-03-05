@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# OPTIONS_GHC -fno-warn-name-shadowing -fno-warn-missing-methods #-}
 
 module Week6 where
 
@@ -21,20 +23,25 @@ data Stream a = Stream a (Stream a)
 instance Show a => Show (Stream a) where
     show = unwords . map show . take 20 . streamToList
 
+-- A simple cons operator, similar to :
+infixr 5 .+
+(.+) :: a -> Stream a -> Stream a
+x .+ s = Stream x s
+
 streamToList :: Stream a -> [a]
 streamToList (Stream x xs) = x : streamToList xs
 
 streamRepeat :: a -> Stream a
-streamRepeat x = Stream x (streamRepeat x)
+streamRepeat x = x .+ streamRepeat x
 
 streamMap :: (a -> b) -> Stream a -> Stream b
-streamMap f (Stream x xs) = Stream (f x) (streamMap f xs)
+streamMap f (Stream x xs) = f x .+ streamMap f xs
 
 streamFromSeed :: (a -> a) -> a -> Stream a
-streamFromSeed f x = let x' = f x in Stream x $ streamFromSeed f x'
+streamFromSeed f x = let x' = f x in x .+ streamFromSeed f x'
 
 interleaveStreams :: Stream a -> Stream a -> Stream a
-interleaveStreams (Stream x xs) ys = Stream x $ interleaveStreams ys xs
+interleaveStreams (Stream x xs) ys = x .+ interleaveStreams ys xs
 
 -- Streams
 
@@ -43,3 +50,12 @@ nats = streamFromSeed (+1) 0
 
 ruler :: Stream Integer
 ruler = foldr1 interleaveStreams . streamToList . streamMap streamRepeat $ nats
+
+x :: Stream Integer
+x = 0 .+ 1 .+ streamRepeat 0
+
+instance Num (Stream Integer) where
+    fromInteger n                     = n .+ streamRepeat 0
+    negate                            = streamMap (* (-1))
+    (Stream x xs) + (Stream y ys)     = (x + y) .+ (xs + ys)
+    (Stream x xs) * ies@(Stream y ys) = (x * y) .+ (streamMap (*x) ys + (xs * ies))
