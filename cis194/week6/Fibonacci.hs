@@ -59,3 +59,11 @@ instance Num (Stream Integer) where
     negate                            = streamMap (* (-1))
     (Stream x xs) + (Stream y ys)     = (x + y) .+ (xs + ys)
     (Stream x xs) * ies@(Stream y ys) = (x * y) .+ (streamMap (*x) ys + (xs * ies))
+
+instance Fractional (Stream Integer) where
+    s1@(Stream x xs) / s2@(Stream y ys) = q
+      where
+        q = (x `div` y) .+ streamMap (`div` y) (xs - (s1 / s2) * ys)
+
+fibs3 :: Stream Integer
+fibs3 = x / (1 - x - x^2)
