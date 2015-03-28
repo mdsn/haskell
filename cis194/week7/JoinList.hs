@@ -60,6 +60,15 @@ dropJ n (Append s x y)
   | otherwise = dropJ (n - sz x) y
 
 
+takeJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+takeJ _ Empty          = Empty
+takeJ n _ | n <= 0     = Empty
+takeJ _ t@(Single _ _) = t
+takeJ n t@(Append s x y)
+  | sz s == n = t
+  | sz x >= n = takeJ n x
+  | otherwise = x +++ takeJ (n - sz x) y
+
 tree :: JoinList Size Char
 tree = let a = single 'a'
            b = single 'b'
