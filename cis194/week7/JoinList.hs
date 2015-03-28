@@ -32,6 +32,10 @@ jlToList (Single _ a)   = [a]
 jlToList (Append _ a b) = jlToList a ++ jlToList b
 
 
+sz :: Sized a => a -> Int
+sz = getSize . size
+
+
 indexJ :: (Sized b, Monoid b) => Int -> JoinList b a -> Maybe a
 indexJ _ Empty         = Nothing
 indexJ i _     | i < 0 = Nothing
@@ -39,16 +43,21 @@ indexJ i _     | i < 0 = Nothing
 indexJ i (Single s x)
   | i >= sz s       = Nothing
   | otherwise       = Just x
-  where
-    sz = getSize . size
 
 indexJ i (Append s x y)
   | sz s <= i       = Nothing
   | (sz x - 1) >= i = indexJ i x
   | otherwise       = indexJ (i - sz x) y
-  where
-    sz :: Sized a => a -> Int
-    sz = getSize . size
+
+
+dropJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+dropJ _ Empty          = Empty
+dropJ n x | n <= 0     = x
+dropJ _ (Single _ _)   = Empty
+dropJ n (Append s x y)
+  | sz s == n = Empty
+  | sz x >= n = dropJ n x +++ y
+  | otherwise = dropJ (n - sz x) y
 
 
 tree :: JoinList Size Char
