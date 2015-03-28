@@ -11,6 +11,10 @@ instance Monoid Score where
   mappend = (+)
 
 
+getScore :: Score -> Int
+getScore (Score n) = n
+
+
 score :: Char -> Score
 score 'a' = Score 1
 score 'b' = Score 3

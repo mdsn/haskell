@@ -1,6 +1,11 @@
+{-# LANGUAGE FlexibleInstances
+           , TypeSynonymInstances
+  #-}
 module JoinList where
 
 import Data.Monoid
+import Buffer
+import Editor
 import Sized
 import Scrabble
 
@@ -14,7 +19,6 @@ instance Sized b => Sized (JoinList b a) where
     size Empty          = 0
     size (Single s _)   = size s
     size (Append s _ _) = size s
-
 
 (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
 Empty +++ r     = r
@@ -70,19 +74,44 @@ takeJ n t@(Append s x y)
   | sz x >= n = takeJ n x
   | otherwise = x +++ takeJ (n - sz x) y
 
-tree :: JoinList Size Char
-tree = let a = single 'a'
-           b = single 'b'
-           c = a +++ b
-           d = single 'd'
-           e = c +++ d
-           f = single 'f'
-           g = single 'g'
-           h = f +++ g
-           i = e +++ h
-           single = Single (Size 1)
-        in i
-
 scoreLine :: String -> JoinList Score String
 scoreLine [] = Empty
 scoreLine xs = Single (scoreString xs) xs
+
+single :: String -> JoinList (Score, Size) String
+single s = Single (scoreString s, 1) s
+
+instance Buffer (JoinList (Score, Size) String) where
+  toString Empty = ""
+  toString (Single _ x)   = x
+  toString (Append _ x y) = toString x ++ toString y
+
+  fromString [] = Empty
+  fromString s = foldr (\x b -> single x +++ b) Empty xs
+    where
+      xs = lines s
+
+  replaceLine n _ b | n < 0                 = b
+  replaceLine n _ b | n >= getSize (size b) = b
+  replaceLine n s b = l +++ fromString s +++ r
+    where
+      l = takeJ n b
+      r = dropJ (n + 1) b
+
+  line = indexJ
+  numLines = getSize . size
+
+  value Empty          = 0
+  value (Single s _)   = getScore $ fst s
+  value (Append s _ _) = getScore $ fst s
+
+main :: IO ()
+main = runEditor editor buf
+ 
+buf :: JoinList (Score, Size) String
+buf = a +++ b +++ c +++ d
+  where
+    a = fromString "Editor is an instance of Monad but not of Applicative - "
+    b = fromString "this will become an error in GHC 7.10, "
+    c = fromString "under the Applicative-Monad Proposal. "
+    d = fromString "-Sincerely, GHC"
