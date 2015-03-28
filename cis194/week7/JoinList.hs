@@ -2,6 +2,7 @@ module JoinList where
 
 import Data.Monoid
 import Sized
+import Scrabble
 
 data JoinList m a = Empty
                   | Single m a
@@ -81,3 +82,7 @@ tree = let a = single 'a'
            i = e +++ h
            single = Single (Size 1)
         in i
+
+scoreLine :: String -> JoinList Score String
+scoreLine [] = Empty
+scoreLine xs = Single (scoreString xs) xs
